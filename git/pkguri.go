@@ -26,7 +26,7 @@ func (uri *PackageURI) String() string {
 	return fmt.Sprintf("%s.git@%s%s", uri.Repo, uri.Ref, uri.Pkg)
 }
 
-var pattern = regexp.MustCompile(`^(?P<repo>.*)@(?P<ref>\w+)(?P<pkg>\/.+)?$`)
+var pattern = regexp.MustCompile(`^(?P<repo>.*)@(?P<ref>[\w-]+)(?P<pkg>\/.+)?$`)
 
 func (uri *PackageURI) MustUnmarshalText(s string) {
 	if err := uri.UnmarshalText([]byte(s)); err != nil {
@@ -45,6 +45,7 @@ func (uri *PackageURI) UnmarshalText(b []byte) error {
 		}
 		switch name {
 		case "repo":
+			// TODO: why are we trimming the .git suffix?
 			uri.Repo = strings.TrimSuffix(matches[i], ".git")
 		case "ref":
 			uri.Ref = matches[i]
